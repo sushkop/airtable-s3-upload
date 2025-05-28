@@ -19,12 +19,14 @@ module.exports = async (req, res) => {
   try {
     const { recordId, attachmentUrl, filename, mimetype } = req.body;
 
-const safeFilename = (filename || 'file')
-  .trim()
+const rawFilename = Array.isArray(filename) ? filename[0] : filename || 'file';
+
+const safeFilename = rawFilename
   .toLowerCase()
+  .trim()
   .replace(/\s+/g, '-')               // replace spaces with dashes
   .replace(/[^a-z0-9_\-.]/g, '')      // remove unsafe characters
-  .slice(0, 100);    
+  .slice(0, 100);         
     const contentType =
       typeof mimetype === 'string' && mimetype.trim() !== ''
         ? mimetype
