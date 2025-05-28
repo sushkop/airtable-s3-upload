@@ -28,15 +28,14 @@ module.exports = async (req, res) => {
     const buffer = await response.buffer();
 
     const key = `airtable-uploads/${uuidv4()}-${safeFilename}`;
-    await s3.send(
-      new PutObjectCommand({
-        Bucket: process.env.S3_BUCKET,
-        Key: key,
-        Body: buffer,
-        ContentType: contentType,
-        ACL: 'public-read',
-      })
-    );
+await s3.send(
+  new PutObjectCommand({
+    Bucket: process.env.S3_BUCKET,
+    Key: key,
+    Body: buffer,
+    ContentType: contentType,
+  })
+);
 
     const s3Url = `https://${process.env.S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
 
