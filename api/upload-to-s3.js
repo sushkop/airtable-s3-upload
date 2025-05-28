@@ -17,18 +17,18 @@ const s3 = new S3Client({
 export default async function handler(req, res) {
   try {
     const { recordId, attachmentUrl, filename, mimetype } = req.body;
-
+    const contentType = mimetype || 'application/octet-stream'; 
     const response = await fetch(attachmentUrl);
     const buffer = await response.buffer();
 
     const key = `airtable-uploads/${uuidv4()}-${filename}`;
-    await s3.send(new PutObjectCommand({
-      Bucket: process.env.S3_BUCKET,
-      Key: key,
-      Body: buffer,
-      ContentType: mimetype,
-      ACL: 'public-read',
-    }));
+await s3.send(new PutObjectCommand({
+  Bucket: process.env.S3_BUCKET,
+  Key: key,
+  Body: buffer,
+  ContentType: contentType,
+  ACL: 'public-read'
+}));
 
     const s3Url = `https://${process.env.S3_BUCKET}.s3.amazonaws.com/${key}`;
 
