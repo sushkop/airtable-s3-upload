@@ -45,7 +45,7 @@ module.exports = async (req, res) => {
       })
     );
 
-    const s3Url = `https://${process.env.S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
+const s3Url = `https://d2e4s9uqom2sw.cloudfront.net/${key}`;
     console.log('✅ File uploaded to S3:', s3Url);
 
     await base(process.env.AIRTABLE_TABLE_NAME).update(recordId, {
