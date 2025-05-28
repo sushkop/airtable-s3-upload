@@ -16,7 +16,11 @@ const s3 = new S3Client({
 
 export default async function handler(req, res) {
   try {
-    const { recordId, attachmentUrl, filename, mimetype } = req.body;
+const { recordId, attachmentUrl, filename, mimetype } = req.body;
+
+const safeFilename = filename || 'file';
+const contentType = typeof mimetype === 'string' && mimetype.trim() !== '' ? mimetype : 'application/octet-stream';
+
     const contentType = mimetype || 'application/octet-stream'; 
     const response = await fetch(attachmentUrl);
     const buffer = await response.buffer();
@@ -24,11 +28,12 @@ export default async function handler(req, res) {
     const key = `airtable-uploads/${uuidv4()}-${filename}`;
 await s3.send(new PutObjectCommand({
   Bucket: process.env.S3_BUCKET,
-  Key: key,
+  Key: `airtable-uploads/${uuidv4()}-${safeFilename}`,
   Body: buffer,
   ContentType: contentType,
-  ACL: 'public-read'
+  ACL: 'public-read',
 }));
+
 
     const s3Url = `https://${process.env.S3_BUCKET}.s3.amazonaws.com/${key}`;
 
